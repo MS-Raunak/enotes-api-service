@@ -2,6 +2,7 @@ package com.ms.service.impl;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +38,7 @@ public class CategoryServiceImpl implements CategoryService{
 
 	@Override
 	public List<CategoryDto> getAllCategory() {
-		List<Category> categories = categoryRepo.findAll();
+		List<Category> categories = categoryRepo.findByIsActiveTrueAndIsDeletedFalse();
 		List<CategoryDto> categoryDtoList = categories.stream().map(category -> mapper.map(category, CategoryDto.class)).toList();
 		
 		return categoryDtoList;
@@ -50,6 +51,31 @@ public class CategoryServiceImpl implements CategoryService{
 		List<CategoryResponse> categoryList = categories.stream().map(category -> mapper.map(category, CategoryResponse.class)).toList();
 		
 		return categoryList;
+	}
+
+	@Override
+	public CategoryDto getCategoryById(Integer id) {
+		Optional<Category> byId = categoryRepo.findByIdAndIsDeletedFalse(id);
+		if (byId.isPresent()) {
+			Category category = byId.get();
+			return mapper.map(category, CategoryDto.class);
+		}
+		
+		return null;
+	}
+
+	@Override
+	public Boolean deleteCategoryById(Integer id) {
+		
+		Optional<Category> categoryOpt = categoryRepo.findById(id);
+		
+		
+		if (categoryOpt.isPresent()) {
+			Category category = categoryOpt.get();
+			category.setIsDeleted(true);
+			return true;
+		}
+		return false;
 	}
 
 }
