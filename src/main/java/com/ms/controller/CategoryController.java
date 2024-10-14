@@ -58,11 +58,11 @@ public class CategoryController {
 	
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<?> getCategoryDetailsById(@PathVariable Integer id) {
+	public ResponseEntity<?> getCategoryDetailsById(@PathVariable Integer id) throws Exception {
 		 CategoryDto categoryDto = categoryService.getCategoryById(id);
 		 
 		 if (ObjectUtils.isEmpty(categoryDto)) {
-				return new ResponseEntity<>("catgeory not found with id " + id, HttpStatus.NOT_FOUND);
+				return new ResponseEntity<>("internal server error " + id, HttpStatus.NOT_FOUND);
 
 		}
 			return new ResponseEntity<>(categoryDto, HttpStatus.OK);
