@@ -15,6 +15,7 @@ import com.ms.entity.Category;
 import com.ms.exception.ResourceNotFoundException;
 import com.ms.repository.CategoryRepository;
 import com.ms.service.CategoryService;
+import com.ms.util.Validation;
 
 @Service
 public class CategoryServiceImpl implements CategoryService{
@@ -22,9 +23,13 @@ public class CategoryServiceImpl implements CategoryService{
 	CategoryRepository categoryRepo;
 	@Autowired
 	ModelMapper mapper;
-	
+	@Autowired
+	Validation validation;
 	@Override
 	public Boolean saveCategory(CategoryDto categoryDto) {
+		//checking validation
+		validation.categoryValidation(categoryDto);
+		
 		Category category = mapper.map(categoryDto, Category.class);
 		
 		if (ObjectUtils.isEmpty(category.getId())) {
